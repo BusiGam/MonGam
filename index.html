@@ -2,39 +2,628 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MonGam - Ultimate Empire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Tycoon by MonGam</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
-
+        /* Base Theme Definition & CSS Variables */
         :root {
+            --bg-gradient-1: #0f172a;
+            --bg-gradient-2: #1e3a8a;
+            --panel-bg: rgba(15, 23, 42, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
             --accent: #38bdf8;
-            --bg-deep: #020617;
+            --accent-hover: #0284c7;
+            --btn-text: #ffffff;
+            --border-color: rgba(56, 189, 248, 0.3);
+            --particle-color: rgba(56, 189, 248, 0.2);
         }
 
-        /* --- HYPER-FLUID BACKGROUND --- */
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-gradient-1: #f8fafc;
+            --bg-gradient-2: #e2e8f0;
+            --panel-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --btn-text: #ffffff;
+            --border-color: rgba(37, 99, 235, 0.3);
+            --particle-color: rgba(37, 99, 235, 0.15);
+        }
+
+        /* Cyberpunk Theme */
+        [data-theme="cyber"] {
+            --bg-gradient-1: #000000;
+            --bg-gradient-2: #052e16;
+            --panel-bg: rgba(0, 0, 0, 0.8);
+            --text-main: #4ade80;
+            --text-muted: #16a34a;
+            --accent: #22c55e;
+            --accent-hover: #15803d;
+            --btn-text: #000000;
+            --border-color: rgba(34, 197, 94, 0.6);
+            --particle-color: rgba(34, 197, 94, 0.25);
+        }
+
+        /* Typography Definitions */
+        [data-font="sans"] { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        [data-font="serif"] { font-family: 'Merriweather', ui-serif, Georgia, serif; }
+        [data-font="mono"] { font-family: 'Fira Code', ui-monospace, monospace; }
+
+        /* Global Structural Classes based on custom properties */
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #000;
-            color: #f8fafc;
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+            color: var(--text-main);
+            min-height: 100vh;
+            margin: 0;
             overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
+            transition: all 0.5s ease;
         }
 
-        .bg-mesh {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: 
-                radial-gradient(at 0% 0%, hsla(222,47%,11%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 100%, hsla(260,100%,10%,1) 0, transparent 50%),
-                radial-gradient(at 50% 50%, hsla(210,100%,5%,1) 0, transparent 50%);
-            filter: blur(60px);
+        .glass-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .text-accent { color: var(--accent); }
+        .border-accent { border-color: var(--border-color); }
+        
+        .custom-input {
+            background-color: rgba(0,0,0,0.2);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--particle-color);
+        }
+        
+        [data-theme="light"] .custom-input {
+            background-color: rgba(255,255,255,0.5);
+        }
+
+        /* Buttons */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--btn-text);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--particle-color);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(80%);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+            color: var(--text-main);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--particle-color);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid var(--particle-color);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body data-theme="corporate" data-font="sans" class="flex flex-col items-center justify-center relative">
+
+    <!-- Animated Background Canvas -->
+    <canvas id="bg-canvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- App Container -->
+    <div id="app" class="relative z-10 w-full max-w-lg px-4 flex flex-col items-center justify-center min-h-screen">
+        
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="absolute inset-0 flex flex-col items-center justify-center z-50 glass-panel rounded-2xl w-full h-full m-4 max-h-[500px] max-w-[480px]">
+            <div class="spinner mb-4"></div>
+            <p class="text-lg font-semibold animate-pulse tracking-wide">Connecting to HQ...</p>
+        </div>
+
+        <!-- 1. Main Menu -->
+        <div id="main-menu" class="glass-panel p-8 md:p-12 rounded-2xl w-full flex-col items-center text-center hidden">
+            <div class="mb-10">
+                <i data-lucide="briefcase" class="w-16 h-16 mx-auto mb-4 text-accent"></i>
+                <h1 class="text-4xl md:text-5xl font-black tracking-tighter mb-2 leading-tight">
+                    STARTUP<br><span class="text-accent">TYCOON</span>
+                </h1>
+                <p class="text-sm tracking-[0.3em] font-bold" style="color: var(--text-muted)">BY MONGAM</p>
+            </div>
+
+            <div class="flex flex-col gap-4 w-full">
+                <button id="btn-new" class="btn btn-primary">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i> Start New Game
+                </button>
+                <button id="btn-load" class="btn btn-primary" disabled>
+                    <i data-lucide="play-circle" class="w-5 h-5"></i> Load Previous Game
+                </button>
+                <button id="btn-settings" class="btn btn-secondary mt-2">
+                    <i data-lucide="settings" class="w-5 h-5"></i> Settings
+                </button>
+                <button id="btn-quit" class="btn btn-secondary border-none opacity-80 hover:opacity-100 text-sm py-2">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Quit
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. New Game Modal (Hidden by default) -->
+        <div id="new-game-modal" class="absolute inset-0 z-40 hidden flex-col items-center justify-center p-4">
+            <div class="glass-panel p-8 rounded-2xl w-full max-w-md shadow-2xl transform transition-all">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="building" class="w-6 h-6 text-accent"></i> New Venture
+                </h2>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold mb-2" style="color: var(--text-muted)">Company Name</label>
+                    <input type="text" id="input-company-name" placeholder="e.g. MonGam Corp" class="w-full px-4 py-3 rounded-lg custom-input transition-all">
+                </div>
+                
+                <div class="flex gap-4">
+                    <button id="btn-cancel-new" class="btn btn-secondary flex-1 py-2">Cancel</button>
+                    <button id="btn-confirm-new" class="btn btn-primary flex-1 py-2">Incorporate</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Settings Modal (Hidden by default) -->
+        <div id="settings-modal" class="absolute inset-0 z-40 hidden flex-col items-center justify-center p-4">
+            <div class="glass-panel p-8 rounded-2xl w-full max-w-md shadow-2xl">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-6 h-6 text-accent"></i> Settings
+                </h2>
+                
+                <div class="space-y-5 mb-8">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2" style="color: var(--text-muted)">Visual Theme</label>
+                        <select id="theme-select" class="w-full px-4 py-3 rounded-lg custom-input cursor-pointer">
+                            <option value="corporate">Corporate (Dark Blue)</option>
+                            <option value="light">Minimal (Light)</option>
+                            <option value="cyber">Cyberpunk (Neon Green)</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold mb-2" style="color: var(--text-muted)">Typography Interface</label>
+                        <select id="font-select" class="w-full px-4 py-3 rounded-lg custom-input cursor-pointer">
+                            <option value="sans">Modern (Sans-Serif)</option>
+                            <option value="serif">Classic (Serif)</option>
+                            <option value="mono">Terminal (Monospace)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button id="btn-cancel-settings" class="btn btn-secondary flex-1 py-2">Cancel</button>
+                    <button id="btn-save-settings" class="btn btn-primary flex-1 py-2">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Mock Game Screen (Hidden by default) -->
+        <div id="game-screen" class="glass-panel p-8 md:p-12 rounded-2xl w-full flex-col items-center text-center hidden">
+            <div class="mb-8 w-full">
+                <div class="flex justify-between items-center mb-6 border-b border-accent pb-4">
+                    <div class="text-left">
+                        <p class="text-xs tracking-widest uppercase mb-1" style="color: var(--text-muted)">HQ Dashboard</p>
+                        <h2 id="game-company" class="text-2xl font-bold text-accent">Loading...</h2>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs tracking-widest uppercase mb-1" style="color: var(--text-muted)">Capital</p>
+                        <h2 id="game-balance" class="text-2xl font-mono font-bold">$0</h2>
+                    </div>
+                </div>
+                
+                <div class="py-12 border-2 border-dashed border-accent rounded-xl mb-8 opacity-60">
+                    <i data-lucide="line-chart" class="w-12 h-12 mx-auto mb-4 text-accent opacity-50"></i>
+                    <p class="text-lg">Simulation Running...</p>
+                    <p class="text-sm mt-2" style="color: var(--text-muted)">(This is the game interface placeholder)</p>
+                </div>
+            </div>
+
+            <button id="btn-back-menu" class="btn btn-secondary w-full">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i> Save & Return to Menu
+            </button>
+        </div>
+
+        <!-- 5. Quit Screen (Hidden by default) -->
+        <div id="quit-screen" class="glass-panel p-10 rounded-2xl w-full flex-col items-center text-center hidden">
+            <i data-lucide="moon" class="w-16 h-16 mx-auto mb-6 text-accent"></i>
+            <h2 class="text-3xl font-bold mb-4">Operations Suspended</h2>
+            <p class="mb-8" style="color: var(--text-muted)">Your session has been safely closed. You may now close this browser tab.</p>
+            <button onclick="location.reload()" class="btn btn-primary">
+                <i data-lucide="refresh-cw" class="w-5 h-5"></i> Restart Session
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Application Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global State
+        let app, auth, db, appId;
+        let currentUser = null;
+        let gameSaveData = null;
+
+        // Safely extract environment variables
+        try {
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+            appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+            if (firebaseConfig) {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            }
+        } catch (e) {
+            console.error("Firebase config missing or invalid:", e);
+        }
+
+        // DOM Elements
+        const ui = {
+            loadingOverlay: document.getElementById('loading-overlay'),
+            mainMenu: document.getElementById('main-menu'),
+            
+            // Main Menu Buttons
+            btnNew: document.getElementById('btn-new'),
+            btnLoad: document.getElementById('btn-load'),
+            btnSettings: document.getElementById('btn-settings'),
+            btnQuit: document.getElementById('btn-quit'),
+            
+            // New Game Modal
+            newGameModal: document.getElementById('new-game-modal'),
+            inputCompanyName: document.getElementById('input-company-name'),
+            btnConfirmNew: document.getElementById('btn-confirm-new'),
+            btnCancelNew: document.getElementById('btn-cancel-new'),
+
+            // Settings Modal
+            settingsModal: document.getElementById('settings-modal'),
+            btnSaveSettings: document.getElementById('btn-save-settings'),
+            btnCancelSettings: document.getElementById('btn-cancel-settings'),
+            themeSelect: document.getElementById('theme-select'),
+            fontSelect: document.getElementById('font-select'),
+            
+            // Game Screen
+            gameScreen: document.getElementById('game-screen'),
+            btnBackMenu: document.getElementById('btn-back-menu'),
+            gameCompanySpan: document.getElementById('game-company'),
+            gameBalanceSpan: document.getElementById('game-balance'),
+            
+            // Quit Screen
+            quitScreen: document.getElementById('quit-screen')
+        };
+
+        // Initialize Authentication & Data Sync
+        async function initApp() {
+            if (!auth || !db) {
+                console.warn("Storage disabled: Running in local-only demo mode.");
+                finishLoading();
+                return;
+            }
+
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error("Authentication failed:", err);
+                finishLoading();
+            }
+
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                if (user) {
+                    setupFirestoreListener(user.uid);
+                } else {
+                    finishLoading();
+                }
+            });
+        }
+
+        // Sync strictly with Firestore following MANDATORY RULES
+        function setupFirestoreListener(uid) {
+            const docRef = doc(db, 'artifacts', appId, 'users', uid, 'saveData', 'profile');
+            
+            onSnapshot(docRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    gameSaveData = docSnap.data();
+                    
+                    // Apply visual preferences immediately
+                    applyPreferences(gameSaveData.theme, gameSaveData.font);
+                    
+                    // Update main menu states
+                    const hasSave = gameSaveData.hasSaveFile === true;
+                    ui.btnLoad.disabled = !hasSave;
+                    
+                    if (hasSave) {
+                        ui.btnLoad.innerHTML = `<i data-lucide="play-circle" class="w-5 h-5"></i> Resume ${gameSaveData.companyName || 'Game'}`;
+                    } else {
+                        ui.btnLoad.innerHTML = `<i data-lucide="play-circle" class="w-5 h-5"></i> Load Previous Game`;
+                    }
+                    lucide.createIcons();
+                } else {
+                    // Initialize empty state
+                    gameSaveData = { theme: 'corporate', font: 'sans', hasSaveFile: false };
+                    ui.btnLoad.disabled = true;
+                    applyPreferences('corporate', 'sans');
+                }
+                finishLoading();
+            }, (error) => {
+                console.error("Firestore sync error:", error);
+                finishLoading();
+            });
+        }
+
+        function finishLoading() {
+            ui.loadingOverlay.classList.add('hidden');
+            ui.mainMenu.classList.remove('hidden');
+            ui.mainMenu.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function applyPreferences(theme, font) {
+            document.body.setAttribute('data-theme', theme || 'corporate');
+            document.body.setAttribute('data-font', font || 'sans');
+        }
+
+        async function commitToCloud(updates) {
+            if (!currentUser || !db) return; // Silent fail in demo mode
+            const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'saveData', 'profile');
+            try {
+                const currentData = gameSaveData || {};
+                await setDoc(docRef, { ...currentData, ...updates }, { merge: true });
+            } catch (err) {
+                console.error("Cloud save failed:", err);
+            }
+        }
+
+        function switchScreen(hideElements, showElement) {
+            hideElements.forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+            showElement.classList.remove('hidden');
+            showElement.classList.add('flex');
+        }
+
+        // --- Event Listeners ---
+
+        // NEW GAME FLOW
+        ui.btnNew.addEventListener('click', () => {
+            ui.inputCompanyName.value = '';
+            ui.newGameModal.classList.remove('hidden');
+            ui.newGameModal.classList.add('flex');
+        });
+
+        ui.btnCancelNew.addEventListener('click', () => {
+            ui.newGameModal.classList.add('hidden');
+            ui.newGameModal.classList.remove('flex');
+        });
+
+        ui.btnConfirmNew.addEventListener('click', async () => {
+            const rawName = ui.inputCompanyName.value.trim();
+            const companyName = rawName || "Stealth Startup";
+            
+            const newState = {
+                hasSaveFile: true,
+                companyName: companyName,
+                balance: 100000,
+                established: new Date().toISOString()
+            };
+            
+            ui.newGameModal.classList.add('hidden');
+            ui.newGameModal.classList.remove('flex');
+            
+            // Save state immediately
+            await commitToCloud(newState);
+            launchGameInterface({ ...gameSaveData, ...newState });
+        });
+
+        // LOAD GAME FLOW
+        ui.btnLoad.addEventListener('click', () => {
+            if (gameSaveData && gameSaveData.hasSaveFile) {
+                launchGameInterface(gameSaveData);
+            }
+        });
+
+        // SETTINGS FLOW
+        ui.btnSettings.addEventListener('click', () => {
+            ui.themeSelect.value = gameSaveData?.theme || 'corporate';
+            ui.fontSelect.value = gameSaveData?.font || 'sans';
+            ui.settingsModal.classList.remove('hidden');
+            ui.settingsModal.classList.add('flex');
+        });
+
+        ui.btnCancelSettings.addEventListener('click', () => {
+            ui.settingsModal.classList.add('hidden');
+            ui.settingsModal.classList.remove('flex');
+        });
+
+        ui.btnSaveSettings.addEventListener('click', async () => {
+            const selectedTheme = ui.themeSelect.value;
+            const selectedFont = ui.fontSelect.value;
+            
+            applyPreferences(selectedTheme, selectedFont);
+            
+            ui.settingsModal.classList.add('hidden');
+            ui.settingsModal.classList.remove('flex');
+            
+            await commitToCloud({ theme: selectedTheme, font: selectedFont });
+        });
+
+        // QUIT & NAVIGATION
+        ui.btnQuit.addEventListener('click', () => {
+            switchScreen([ui.mainMenu, ui.gameScreen], ui.quitScreen);
+        });
+
+        ui.btnBackMenu.addEventListener('click', () => {
+            switchScreen([ui.gameScreen], ui.mainMenu);
+        });
+
+        function launchGameInterface(data) {
+            switchScreen([ui.mainMenu], ui.gameScreen);
+            ui.gameCompanySpan.textContent = data.companyName;
+            ui.gameBalanceSpan.textContent = `$${data.balance.toLocaleString()}`;
+        }
+
+        // --- Animated Network Background ---
+        function initializeNetworkCanvas() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let nodes = [];
+            const NODE_COUNT = window.innerWidth < 768 ? 30 : 60;
+            const MAX_DISTANCE = 150;
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Node {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.8;
+                    this.vy = (Math.random() - 0.5) * 0.8;
+                    this.radius = Math.random() * 2 + 1;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    // Bounce off walls
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    // Extract dynamic color from CSS variables for seamless theme switching
+                    const colorStr = getComputedStyle(document.body).getPropertyValue('--particle-color').trim();
+                    ctx.fillStyle = colorStr || 'rgba(128, 128, 128, 0.2)';
+                    ctx.fill();
+                }
+            }
+
+            for(let i=0; i < NODE_COUNT; i++) {
+                nodes.push(new Node());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                const colorStr = getComputedStyle(document.body).getPropertyValue('--particle-color').trim();
+                
+                nodes.forEach(node => {
+                    node.update();
+                    node.draw();
+                });
+                
+                // Draw connections simulating business networks
+                for(let i=0; i < nodes.length; i++) {
+                    for(let j=i+1; j < nodes.length; j++) {
+                        let dx = nodes[i].x - nodes[j].x;
+                        let dy = nodes[i].y - nodes[j].y;
+                        let distance = Math.sqrt(dx*dx + dy*dy);
+                        
+                        if(distance < MAX_DISTANCE) {
+                            ctx.beginPath();
+                            // Calculate opacity based on distance
+                            let opacity = 1 - (distance / MAX_DISTANCE);
+                            // Simple hack to inject opacity into rgba string if format is reliable
+                            let baseColor = colorStr || 'rgba(128, 128, 128, 0.2)';
+                            // Replace last number (opacity)
+                            let dynamicColor = baseColor.replace(/[\d.]+\)$/g, `${opacity * 0.5})`);
+                            
+                            ctx.strokeStyle = dynamicColor;
+                            ctx.lineWidth = 1;
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[j].x, nodes[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // App Boot
+        window.onload = () => {
+            lucide.createIcons();
+            initializeNetworkCanvas();
+            initApp();
+        };
+
+    </script>
+</body>
+</html>
+filter: blur(60px);
             animation: meshMove 15s ease-in-out infinite alternate;
         }
 
